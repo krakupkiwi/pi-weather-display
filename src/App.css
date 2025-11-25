@@ -1,0 +1,399 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: none;
+}
+
+#root {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* App Container */
+.app {
+  width: 100vw;
+  height: 100vh;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+.app.light {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+}
+
+.app.dark {
+  background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+  color: #e5e7eb;
+}
+
+/* Clock */
+.clock {
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.clock .time {
+  font-size: 56px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -2px;
+}
+
+.clock .period {
+  font-size: 18px;
+  font-weight: 500;
+  margin-top: -4px;
+  opacity: 0.8;
+}
+
+.clock .date {
+  font-size: 14px;
+  margin-top: 4px;
+  opacity: 0.9;
+  font-weight: 500;
+}
+
+/* Current Weather */
+.current-weather {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin: 12px 0;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+}
+
+.weather-main {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.weather-icon {
+  width: 48px;
+  height: 48px;
+}
+
+.temperature {
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.weather-details {
+  flex: 1;
+  text-align: left;
+}
+
+.description {
+  font-size: 16px;
+  font-weight: 600;
+  text-transform: capitalize;
+  margin-bottom: 2px;
+}
+
+.feels-like {
+  font-size: 12px;
+  opacity: 0.8;
+  margin-bottom: 4px;
+}
+
+.extra-info {
+  display: flex;
+  gap: 12px;
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+/* Weekly Forecast */
+.weekly-forecast {
+  display: flex;
+  gap: 6px;
+  margin: 12px 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.weekly-forecast::-webkit-scrollbar {
+  display: none;
+}
+
+.forecast-day {
+  flex: 1;
+  min-width: 60px;
+  padding: 8px 4px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.day-name {
+  font-size: 11px;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.forecast-icon {
+  width: 28px;
+  height: 28px;
+}
+
+.temp-range {
+  display: flex;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.temp-high {
+  color: inherit;
+}
+
+.temp-low {
+  opacity: 0.6;
+}
+
+.precipitation {
+  font-size: 10px;
+  opacity: 0.8;
+  color: #60a5fa;
+}
+
+/* Tides */
+.tides {
+  margin: 12px 0;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+}
+
+.section-title {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  opacity: 0.95;
+}
+
+.tide-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.tide-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+}
+
+.tide-icon {
+  flex-shrink: 0;
+}
+
+.tide-icon.high {
+  color: #3b82f6;
+}
+
+.tide-icon.low {
+  color: #f59e0b;
+}
+
+.tide-info {
+  display: flex;
+  flex-direction: column;
+  font-size: 11px;
+}
+
+.tide-time {
+  font-weight: 600;
+}
+
+.tide-type {
+  font-size: 10px;
+  opacity: 0.8;
+  text-transform: capitalize;
+}
+
+.tide-height {
+  font-size: 10px;
+  opacity: 0.7;
+}
+
+/* Fishing Conditions */
+.fishing-conditions {
+  margin: 12px 0;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+}
+
+.fishing-rating {
+  border: 2px solid;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.rating-indicator {
+  padding: 8px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 16px;
+  color: #000;
+}
+
+.rating-factors {
+  padding: 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.factor {
+  display: flex;
+  flex-direction: column;
+  font-size: 11px;
+}
+
+.factor-label {
+  opacity: 0.8;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.factor-value {
+  font-size: 10px;
+  opacity: 0.9;
+}
+
+/* Utility */
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.error {
+  padding: 16px;
+  background: rgba(239, 68, 68, 0.2);
+  border: 2px solid #ef4444;
+  border-radius: 12px;
+  margin: 12px 0;
+  text-align: center;
+}
+
+.error p {
+  margin: 4px 0;
+}
+
+.error .hint {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.no-data {
+  text-align: center;
+  opacity: 0.7;
+  font-size: 12px;
+  padding: 8px;
+}
+
+.tap-hint {
+  text-align: center;
+  margin-top: auto;
+  padding-top: 8px;
+  font-size: 11px;
+  opacity: 0.5;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+/* Views */
+.main-view,
+.tides-view {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Responsive adjustments for 5-inch display (800x480) */
+@media (max-width: 800px) and (max-height: 480px) {
+  .app {
+    padding: 12px;
+  }
+
+  .clock .time {
+    font-size: 48px;
+  }
+
+  .clock .date {
+    font-size: 12px;
+  }
+
+  .current-weather {
+    margin: 8px 0;
+    padding: 10px;
+  }
+
+  .temperature {
+    font-size: 40px;
+  }
+
+  .weather-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .weekly-forecast {
+    margin: 8px 0;
+  }
+
+  .forecast-day {
+    min-width: 50px;
+    padding: 6px 2px;
+  }
+
+  .fishing-conditions,
+  .tides {
+    margin: 8px 0;
+    padding: 10px;
+  }
+}
