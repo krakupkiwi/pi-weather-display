@@ -2,7 +2,7 @@
 
 A sleek, modern weather and clock display designed for Raspberry Pi 3 with a 5-inch touchscreen. Built with React and TypeScript, featuring auto day/night themes, weather forecasts, tide information, and fishing conditions.
 
-![Screenshot](screenshot.png)
+![Screenshot](Screenshot.png)
 
 ## Features
 
