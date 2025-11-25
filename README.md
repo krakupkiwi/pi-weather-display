@@ -101,7 +101,7 @@ npm run build
 ```bash
 # Install Chromium browser
 sudo apt-get update
-sudo apt-get install -y chromium-browser unclutter
+sudo apt-get install -y chromium unclutter
 
 # Install a simple HTTP server
 npm install -g serve
@@ -121,7 +121,7 @@ Add the following content:
 #!/bin/bash
 
 # Hide mouse cursor
-unclutter -idle 0 &
+#unclutter -idle 0 &
 
 # Start the web server
 cd ~/pi-weather-display
@@ -131,7 +131,7 @@ serve -s dist -l 3000 &
 sleep 5
 
 # Start Chromium in kiosk mode
-chromium-browser \
+chromium \
   --kiosk \
   --noerrdialogs \
   --disable-infobars \
@@ -151,20 +151,23 @@ chmod +x ~/start-weather-display.sh
 
 ### 6. Configure Auto-Start on Boot
 
-Edit the autostart file:
+Install wtype
 
 ```bash
-mkdir -p ~/.config/lxsession/LXDE-pi
-nano ~/.config/lxsession/LXDE-pi/autostart
+sudo apt -y install wtype
 ```
 
-Add these lines:
+edit ".config/labwc/autostart", which is a configuration file used to automatically run programs when the Raspberry Pi OS desktop has loaded.
 
+```bash
+nano .config/labwc/autostart
 ```
-@xset s off
-@xset -dpms
-@xset s noblank
-@/home/pi/start-weather-display.sh
+
+Add the following two lines:
+
+```bash
+chromium --kiosk --noerrdialogs --disable-infobars --no-first-run --enable-features=OverlayScrollbar --start-maximized &
+~/start-weather-display.sh
 ```
 
 ### 7. Disable Screen Blanking (Optional)
