@@ -1,7 +1,15 @@
 {
   "name": "pi-weather-display",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "A sleek weather and clock display for Raspberry Pi with animated icons, tides, and fishing forecast",
+  "author": "Your Name",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/pi-weather-display"
+  },
+  "keywords": ["raspberry-pi", "weather", "tides", "fishing", "react", "typescript"],
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -14,6 +22,7 @@
     "framer-motion": "^12.23.24",
     "lucide-react": "^0.554.0",
     "react": "^19.2.0",
+    "react-animated-weather": "^4.0.1",
     "react-dom": "^19.2.0"
   },
   "devDependencies": {

@@ -2,15 +2,18 @@
 
 A sleek, modern weather and clock display designed for Raspberry Pi 3 with a 5-inch touchscreen. Built with React and TypeScript, featuring auto day/night themes, weather forecasts, tide information, and fishing conditions.
 
+![Screenshot](screenshot.png)
+
 ## Features
 
 - **Real-time Clock** - Large, easy-to-read time and date display
-- **Current Weather** - Temperature, conditions, humidity, and wind speed
-- **7-Day Forecast** - Week-ahead weather predictions
-- **Tide Information** - Daily high and low tides (NOAA data)
+- **Animated Weather Icons** - Beautiful animated weather icons for current conditions and forecast
+- **Current Weather** - Temperature, conditions, humidity, and wind speed (Celsius, km/h)
+- **7-Day Forecast** - Week-ahead weather predictions with animated icons
+- **Tide Information** - Daily high and low tides (global coverage via WorldTides API)
 - **Fishing Forecast** - Conditions rating based on weather, tides, and moon phase
 - **Auto Day/Night Theme** - Switches between light and dark themes based on time
-- **Touch Interactions** - Tap to switch between main and tide views
+- **Single-Page Layout** - Everything visible at once, tides and fishing side by side
 - **Smooth Animations** - Framer Motion for polished transitions
 - **Optimized for 5-inch Display** - Perfect for 800x480 resolution
 
@@ -30,16 +33,25 @@ A sleek, modern weather and clock display designed for Raspberry Pi 3 with a 5-i
 2. Sign up for a free account
 3. Navigate to API keys section
 4. Copy your API key
+5. **Important:** API key activation can take 10 minutes to 2 hours
+6. The app uses the free tier APIs (Current Weather + 5 Day Forecast)
 
 **Find Your Coordinates:**
 1. Go to https://www.latlong.net/
 2. Search for your location
 3. Note your latitude and longitude
 
-**Find Tide Station (optional):**
+**WorldTides API (Recommended for Australia & Global):**
+1. Visit https://www.worldtides.info/register
+2. Sign up for a free account (no credit card required)
+3. Get your API key (1000 requests/month free tier)
+4. Note: You can test without an API key but with limited requests
+
+**NOAA Tides (US Only - Alternative):**
 1. Go to https://tidesandcurrents.noaa.gov/
 2. Search for your nearest tide station
 3. Note the Station ID
+4. Set `VITE_TIDE_API=noaa` in your `.env` file
 
 ### 2. Install on Raspberry Pi
 
@@ -61,10 +73,21 @@ nano .env
 
 Update `.env` with your information:
 ```env
+# Weather API
 VITE_OPENWEATHER_API_KEY=your_actual_api_key
-VITE_LATITUDE=your_latitude
-VITE_LONGITUDE=your_longitude
-VITE_TIDE_STATION=your_tide_station_id
+
+# Your location (example: Sydney, Australia)
+VITE_LATITUDE=-33.8688
+VITE_LONGITUDE=151.2093
+
+# Tide API - use 'worldtides' for Australia/Global or 'noaa' for US
+VITE_TIDE_API=worldtides
+
+# WorldTides API key (optional for testing, recommended for production)
+VITE_WORLDTIDES_API_KEY=your_worldtides_key
+
+# Only needed if using NOAA (US only)
+VITE_NOAA_STATION=8518750
 ```
 
 ### 3. Build the Application
@@ -241,13 +264,26 @@ const newTheme: Theme = hour >= 6 && hour < 18 ? 'light' : 'dark';
 - Tides: `src/hooks/useTides.ts` (default: 1 hour)
 - Theme: `src/ThemeContext.tsx` (default: 1 minute)
 
-### Temperature Units
+### Temperature and Wind Speed Units
 
-The weather API is set to imperial (Fahrenheit) by default. To change to metric (Celsius), edit `src/hooks/useWeather.ts`:
+The weather API is set to **metric units by default** (Celsius, km/h):
+- Temperature: Celsius (°C)
+- Wind speed: Kilometers per hour (km/h)
+
+To change to imperial units (Fahrenheit, mph), edit `src/hooks/useWeather.ts`:
 
 ```typescript
-units=metric  // Change from units=imperial
+// Line 58 and Line 70 - Change both occurrences
+units=imperial  // Change from units=metric
 ```
+
+Then update `src/components/CurrentWeather.tsx`:
+```typescript
+// Line 46 - Remove the *3.6 conversion
+<span>💨 {Math.round(current.wind_speed)} mph</span>
+```
+
+And update `src/hooks/useFishingConditions.ts` temperature thresholds back to Fahrenheit.
 
 ## Troubleshooting
 
@@ -258,9 +294,12 @@ units=metric  // Change from units=imperial
 - OpenWeatherMap free tier may have delays
 
 **Tides not showing:**
-- Verify your NOAA station ID is correct
-- Some areas don't have tide data available
-- Check if you're near a coastal area
+- Check your latitude/longitude are correct
+- Verify `VITE_TIDE_API` is set to `worldtides` (for Australia/global)
+- If using WorldTides without API key, you may hit rate limits
+- Get a free API key at https://www.worldtides.info/register
+- For US locations, you can use `VITE_TIDE_API=noaa` with a station ID
+- Some inland areas may not have tide data available
 
 **Screen not turning off:**
 - Verify the autostart configuration
@@ -274,7 +313,8 @@ units=metric  // Change from units=imperial
 ## APIs Used
 
 - **OpenWeatherMap** - Weather data (https://openweathermap.org/api)
-- **NOAA Tides & Currents** - Tide predictions (https://tidesandcurrents.noaa.gov/)
+- **WorldTides** - Global tide predictions including Australia (https://www.worldtides.info/)
+- **NOAA Tides & Currents** - US tide predictions (https://tidesandcurrents.noaa.gov/)
 
 ## License
 

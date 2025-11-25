@@ -1,9 +1,41 @@
 import { useState, useEffect } from 'react';
-import type { WeatherData } from '../types';
+import type { WeatherData, DailyWeather } from '../types';
 
 const OPENWEATHER_API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY || '';
 const DEFAULT_LAT = '40.7128'; // Default to NYC
 const DEFAULT_LON = '-74.0060';
+
+// Helper function to process 3-hour forecast data into daily summaries
+const processForecastData = (forecastList: any[]): DailyWeather[] => {
+  const dailyData: { [key: string]: any } = {};
+
+  forecastList.forEach((item) => {
+    const date = new Date(item.dt * 1000).toDateString();
+
+    if (!dailyData[date]) {
+      dailyData[date] = {
+        dt: item.dt,
+        temps: [],
+        weather: item.weather,
+        pop: item.pop || 0,
+      };
+    }
+
+    dailyData[date].temps.push(item.main.temp);
+    dailyData[date].pop = Math.max(dailyData[date].pop, item.pop || 0);
+  });
+
+  return Object.values(dailyData).map((day: any) => ({
+    dt: day.dt,
+    temp: {
+      day: day.temps.reduce((a: number, b: number) => a + b, 0) / day.temps.length,
+      min: Math.min(...day.temps),
+      max: Math.max(...day.temps),
+    },
+    weather: day.weather,
+    pop: day.pop,
+  }));
+};
 
 export const useWeather = (lat?: string, lon?: string) => {
   const [weather, setWeather] = useState<WeatherData | null>(null);
@@ -21,16 +53,43 @@ export const useWeather = (lat?: string, lon?: string) => {
           throw new Error('OpenWeather API key not configured');
         }
 
-        const response = await fetch(
-          `https://api.openweathermap.org/data/3.0/onecall?lat=${latitude}&lon=${longitude}&exclude=minutely,hourly,alerts&units=imperial&appid=${OPENWEATHER_API_KEY}`
+        // Fetch current weather (free tier)
+        const currentResponse = await fetch(
+          `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=metric&appid=${OPENWEATHER_API_KEY}`
         );
 
-        if (!response.ok) {
-          throw new Error('Failed to fetch weather data');
+        if (!currentResponse.ok) {
+          const errorData = await currentResponse.json().catch(() => ({}));
+          throw new Error(errorData.message || `API Error: ${currentResponse.status}`);
         }
 
-        const data = await response.json();
-        setWeather(data);
+        const currentData = await currentResponse.json();
+
+        // Fetch 7-day forecast (free tier - 5 day/3 hour is the free one)
+        const forecastResponse = await fetch(
+          `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&units=metric&appid=${OPENWEATHER_API_KEY}`
+        );
+
+        if (!forecastResponse.ok) {
+          const errorData = await forecastResponse.json().catch(() => ({}));
+          throw new Error(errorData.message || `API Error: ${forecastResponse.status}`);
+        }
+
+        const forecastData = await forecastResponse.json();
+
+        // Transform data to match our WeatherData structure
+        const transformedData: WeatherData = {
+          current: {
+            temp: currentData.main.temp,
+            feels_like: currentData.main.feels_like,
+            humidity: currentData.main.humidity,
+            weather: currentData.weather,
+            wind_speed: currentData.wind.speed,
+          },
+          daily: processForecastData(forecastData.list),
+        };
+
+        setWeather(transformedData);
         setError(null);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Unknown error');

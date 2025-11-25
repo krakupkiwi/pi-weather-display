@@ -1,26 +1,33 @@
 import { motion } from 'framer-motion';
 import { format } from 'date-fns';
-import { Cloud, CloudRain, Sun, CloudSnow, Wind } from 'lucide-react';
+import ReactAnimatedWeather from 'react-animated-weather';
 import type { DailyWeather } from '../types';
 
 interface WeeklyForecastProps {
   daily: DailyWeather[];
 }
 
-const getWeatherIcon = (main: string, size: number = 24) => {
-  const props = { size, className: 'forecast-icon' };
+type WeatherIconType = 'CLEAR_DAY' | 'CLEAR_NIGHT' | 'PARTLY_CLOUDY_DAY' | 'PARTLY_CLOUDY_NIGHT' | 'CLOUDY' | 'RAIN' | 'SLEET' | 'SNOW' | 'WIND' | 'FOG';
+
+const getWeatherIcon = (main: string): WeatherIconType => {
   switch (main.toLowerCase()) {
     case 'clear':
-      return <Sun {...props} />;
+      return 'CLEAR_DAY';
     case 'clouds':
-      return <Cloud {...props} />;
+      return 'CLOUDY';
     case 'rain':
+      return 'RAIN';
     case 'drizzle':
-      return <CloudRain {...props} />;
+      return 'RAIN';
     case 'snow':
-      return <CloudSnow {...props} />;
+      return 'SNOW';
+    case 'thunderstorm':
+      return 'RAIN';
+    case 'fog':
+    case 'mist':
+      return 'FOG';
     default:
-      return <Wind {...props} />;
+      return 'CLOUDY';
   }
 };
 
@@ -38,7 +45,12 @@ export const WeeklyForecast = ({ daily }: WeeklyForecastProps) => {
           <div className="day-name">
             {format(new Date(day.dt * 1000), 'EEE')}
           </div>
-          {getWeatherIcon(day.weather[0]?.main || '', 28)}
+          <ReactAnimatedWeather
+            icon={getWeatherIcon(day.weather[0]?.main || '')}
+            color="white"
+            size={32}
+            animate={true}
+          />
           <div className="temp-range">
             <span className="temp-high">{Math.round(day.temp.max)}°</span>
             <span className="temp-low">{Math.round(day.temp.min)}°</span>

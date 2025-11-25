@@ -1,24 +1,32 @@
 import { motion } from 'framer-motion';
-import { Cloud, CloudRain, Sun, CloudSnow, Wind } from 'lucide-react';
+import ReactAnimatedWeather from 'react-animated-weather';
 import type { WeatherData } from '../types';
 
 interface CurrentWeatherProps {
   weather: WeatherData;
 }
 
-const getWeatherIcon = (main: string) => {
+type WeatherIconType = 'CLEAR_DAY' | 'CLEAR_NIGHT' | 'PARTLY_CLOUDY_DAY' | 'PARTLY_CLOUDY_NIGHT' | 'CLOUDY' | 'RAIN' | 'SLEET' | 'SNOW' | 'WIND' | 'FOG';
+
+const getWeatherIcon = (main: string): WeatherIconType => {
   switch (main.toLowerCase()) {
     case 'clear':
-      return <Sun className="weather-icon" />;
+      return 'CLEAR_DAY';
     case 'clouds':
-      return <Cloud className="weather-icon" />;
+      return 'CLOUDY';
     case 'rain':
+      return 'RAIN';
     case 'drizzle':
-      return <CloudRain className="weather-icon" />;
+      return 'RAIN';
     case 'snow':
-      return <CloudSnow className="weather-icon" />;
+      return 'SNOW';
+    case 'thunderstorm':
+      return 'RAIN';
+    case 'fog':
+    case 'mist':
+      return 'FOG';
     default:
-      return <Wind className="weather-icon" />;
+      return 'CLOUDY';
   }
 };
 
@@ -35,7 +43,12 @@ export const CurrentWeather = ({ weather }: CurrentWeatherProps) => {
       className="current-weather"
     >
       <div className="weather-main">
-        {getWeatherIcon(weatherMain)}
+        <ReactAnimatedWeather
+          icon={getWeatherIcon(weatherMain)}
+          color="white"
+          size={64}
+          animate={true}
+        />
         <div className="temperature">{Math.round(current.temp)}°</div>
       </div>
       <div className="weather-details">
@@ -43,7 +56,7 @@ export const CurrentWeather = ({ weather }: CurrentWeatherProps) => {
         <div className="feels-like">Feels like {Math.round(current.feels_like)}°</div>
         <div className="extra-info">
           <span>💧 {current.humidity}%</span>
-          <span>💨 {Math.round(current.wind_speed)} mph</span>
+          <span>💨 {Math.round(current.wind_speed * 3.6)} km/h</span>
         </div>
       </div>
     </motion.div>

@@ -52,21 +52,21 @@ export const useFishingConditions = (
       const temp = weather.current.temp;
       const windSpeed = weather.current.wind_speed;
 
-      // Temperature (50-75°F is ideal)
-      if (temp >= 50 && temp <= 75) {
+      // Temperature (10-24°C is ideal)
+      if (temp >= 10 && temp <= 24) {
         score += 20;
         factors.weather = 'Ideal temperature';
-      } else if (temp >= 40 && temp <= 85) {
+      } else if (temp >= 4 && temp <= 29) {
         score += 10;
         factors.weather = 'Good temperature';
       } else {
         factors.weather = 'Poor temperature';
       }
 
-      // Wind (light to moderate is best, < 15 mph)
-      if (windSpeed < 5) {
+      // Wind (light to moderate is best, < 6.7 m/s)
+      if (windSpeed < 2.2) {
         score += 15;
-      } else if (windSpeed < 15) {
+      } else if (windSpeed < 6.7) {
         score += 10;
       } else {
         score -= 10;
